@@ -863,6 +863,38 @@ html,body{background:#fbf5ec!important;color:#302116!important}
 input:focus,textarea:focus,select:focus{border-color:#b85b25!important;outline-color:#b85b25!important}
 </style>
 
+<script id="continue-shopping-fix">
+(function(){
+  const backHome = document.getElementById('backHome');
+  if (!backHome) return;
+  backHome.addEventListener('click', function(event){
+    event.preventDefault();
+    const thankYou = document.getElementById('thankYouPage');
+    const processing = document.getElementById('processingPage');
+    // Keep the original 2-second order-processing delay unchanged.
+    // This brief 200ms loading screen is only for Continue Shopping.
+    if (thankYou) thankYou.style.display = 'none';
+    if (processing) processing.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    window.setTimeout(function(){
+      if (processing) processing.style.display = 'none';
+      const orderForm = document.getElementById('orderForm');
+      if (orderForm) orderForm.reset();
+      ['orderQuantity','orderPrice','orderTotal'].forEach(function(id){
+        const field = document.getElementById(id);
+        if (field) field.value = '';
+      });
+      waistOrderSubmitting = false;
+      ['header','main','.reviews','footer'].forEach(function(selector){
+        document.querySelectorAll(selector).forEach(function(el){ el.style.display = ''; });
+      });
+      document.body.style.overflow = 'auto';
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }, 200);
+  });
+})();
+</script>
+
 <style id="thank-you-brown-theme-final">
 #thankYouPage{background:radial-gradient(circle at 50% 20%,#f4dfc7 0,#fbf5ec 45%,#fffdf8 100%)!important;color:#302116!important}
 #thankYouPage .thank-you-card{border-color:#dfc4a7!important;box-shadow:0 16px 48px rgba(75,42,24,.10)!important;background:rgba(255,253,248,.92)!important}
